@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.Scanner;
 
 public class Client {
@@ -14,10 +13,12 @@ public class Client {
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
 
-        String serverHost = "159.31.61.76";
+        String serverHost = "127.0.0.1";
         Socket socketOfClient = null;
         BufferedWriter os = null;
         BufferedReader is = null;
+
+
 
         try {
             key = KeyGenerator.getInstance("AES").generateKey();

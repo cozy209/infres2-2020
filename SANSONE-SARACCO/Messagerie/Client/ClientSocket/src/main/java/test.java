@@ -9,7 +9,7 @@ public class test {
 
     public static void main(String[] args) throws Exception {
 
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+        /*KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
         keyGenerator.init(CryptoService.AES_KEY_SIZE);
 
         // Generate Key
@@ -27,6 +27,8 @@ public class test {
 
             String decryptedText = CryptoService.decrypt(cipherText, key, IV);
             System.out.println(decryptedText);
-        }
+        }*/
+
+        Authentification authent = new Authentification(null);
     }
 }
