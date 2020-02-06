@@ -23,27 +23,16 @@ public class CryptoService {
 
         // Generate Key
         SecretKey key = keyGenerator.generateKey();
-        byte[] IV = new byte[GCM_IV_LENGTH];
-        SecureRandom random = new SecureRandom();
-        random.nextBytes(IV);
-
-        System.out.println("Original Text : " + plainText);
-
-        byte[] cipherText = encrypt(plainText.getBytes(), key, IV);
-        System.out.println("Encrypted Text : " + Base64.getEncoder().encodeToString(cipherText));
-
-        String decryptedText = decrypt(cipherText, key, IV);
-        System.out.println("DeCrypted Text : " + decryptedText);
     }
 
-    static byte[] getIV(){
+    static byte[] getNewIv(){
         byte[] IV = new byte[GCM_IV_LENGTH];
         SecureRandom random = new SecureRandom();
         random.nextBytes(IV);
         return IV;
     }
 
-    public static byte[] encrypt(byte[] plaintext, SecretKey key, byte[] IV) throws Exception {
+    public static byte[][] encrypt(byte[] plaintext, SecretKey key) throws Exception {
 
         // Get Cipher Instance
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
@@ -52,6 +41,7 @@ public class CryptoService {
         SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), "AES");
 
         // Create GCMParameterSpec
+        byte[]IV= getNewIv();
         GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, IV);
 
         // Initialize Cipher for ENCRYPT_MODE
@@ -59,11 +49,13 @@ public class CryptoService {
 
         // Perform Encryption
         byte[] cipherText = cipher.doFinal(plaintext);
+        byte[][] Message={cipherText,IV};
 
-        return cipherText;
+
+        return Message;
     }
 
-    public static String decrypt(byte[] cipherText, SecretKey key, byte[] IV) throws Exception {
+    public static String decrypt(byte[][] Message, SecretKey key) throws Exception {
 
         // Get Cipher Instance
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
@@ -72,13 +64,13 @@ public class CryptoService {
         SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), "AES");
 
         // Create GCMParameterSpec
-        GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, IV);
+        GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, Message[1]);
 
         // Initialize Cipher for DECRYPT_MODE
         cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmParameterSpec);
 
         // Perform Decryption
-        byte[] decryptedText = cipher.doFinal(cipherText);
+        byte[] decryptedText = cipher.doFinal(Message[0]);
 
         return new String(decryptedText);
     }

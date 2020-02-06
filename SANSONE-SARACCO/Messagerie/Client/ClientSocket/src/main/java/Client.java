@@ -50,7 +50,7 @@ public class Client {
 
                 toto = new Scanner(System.in).nextLine();
 
-                byte[] cryptedToto = CryptoService.encrypt(toto.getBytes(),key,CryptoService.getIV());
+                byte[][] cryptedToto = CryptoService.encrypt(toto.getBytes(),key);
 
                 os.write(toto);
 
