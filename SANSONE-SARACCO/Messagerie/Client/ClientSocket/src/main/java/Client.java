@@ -25,12 +25,21 @@ public class Client {
         Message messageRequest;
         Message messageResponse;
 
+        // Load properties
+        Properties properties = new Properties();
+        String filePath = new File("").getAbsolutePath();
+        filePath = filePath.concat("/src/main/resources/config.properties");
+        try {
+            properties.load(new FileInputStream(filePath));
+        } catch (IOException e) {
+            System.out.println("Error while loading config.properties");
+            e.printStackTrace();
+        }
+
         //bdd
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/client", "nini", "patate");
-
-
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/client", properties.getProperty("BDUSR"), properties.getProperty("BDPWD"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -53,15 +62,6 @@ public class Client {
         try {
 
             // Mise en place chiffrement
-
-            Properties properties = new Properties();
-            String filePath = new File("").getAbsolutePath();
-
-
-            filePath = filePath.concat("/src/main/resources/salt.properties");
-            properties.load(new FileInputStream(filePath));
-
-
             System.out.print("Entrez la clé de chiffrement : ");
             String pwd = new Scanner(System.in).nextLine();
             key = CryptoService.getKey(pwd, properties);
