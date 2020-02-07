@@ -8,7 +8,7 @@ public class Authentification {
     String username;
     String myHashedPassword;
     String othersHashedPassword;
-    byte[] salt;
+    String salt;
 
     public Authentification(Connection con) {
 
@@ -28,7 +28,6 @@ public class Authentification {
         fetchOthersHashedPassword(con);
 
         myHashedPassword = CryptoService.getSaltedHashedValueOf(password,salt);
-
     }
 
     private void fetchOthersHashedPassword(Connection con){
@@ -87,11 +86,11 @@ public class Authentification {
     }
 
     public String doOthersChallenge(String challenge){
-        return CryptoService.getSaltedHashedValueOf(othersHashedPassword,challenge.getBytes());
+        return CryptoService.getSaltedHashedValueOf(othersHashedPassword,challenge);
     }
 
     public String doMyChallenge(String challenge){
-        return CryptoService.getSaltedHashedValueOf(myHashedPassword,challenge.getBytes());
+        return CryptoService.getSaltedHashedValueOf(myHashedPassword,challenge);
     }
 
     public boolean compareValues(String clientChallenge, String serverChallenge){
