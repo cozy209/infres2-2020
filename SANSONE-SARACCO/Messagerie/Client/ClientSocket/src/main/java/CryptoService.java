@@ -1,12 +1,14 @@
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Base64;
+import java.security.spec.KeySpec;
 import java.util.Properties;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class CryptoService {
@@ -34,45 +36,40 @@ public class CryptoService {
         return IV;
     }
 
-    public static byte[][] encrypt(byte[] plaintext, SecretKey key) throws Exception {
+    public static Message encrypt(byte[] plaintext, SecretKeySpec key) throws Exception {
 
         // Get Cipher Instance
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-
-        // Create SecretKeySpec
-        SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), "AES");
 
         // Create GCMParameterSpec
         byte[]IV= getNewIv();
         GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, IV);
 
         // Initialize Cipher for ENCRYPT_MODE
-        cipher.init(Cipher.ENCRYPT_MODE, keySpec, gcmParameterSpec);
+        cipher.init(Cipher.ENCRYPT_MODE, key, gcmParameterSpec);
 
         // Perform Encryption
         byte[] cipherText = cipher.doFinal(plaintext);
 
-        byte[][] Message={cipherText,IV};
+        Message message= new Message(IV,cipherText);
 
-        return Message;
+        return message;
     }
 
-    public static String decrypt(byte[][] Message, SecretKey key) throws Exception {
+    public static String decrypt(Message message, SecretKeySpec key) throws Exception {
 
         // Get Cipher Instance
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
 
-        // Create SecretKeySpec
-        SecretKeySpec keySpec = new SecretKeySpec(key.getEncoded(), "AES");
 
         // Create GCMParameterSpec
-        GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, Message[1]);
+        GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, message.getIV());
 
         // Initialize Cipher for DECRYPT_MODE
-        cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmParameterSpec);
+        cipher.init(Cipher.DECRYPT_MODE, key, gcmParameterSpec);
 
         // Perform Decryption
-        byte[] decryptedText = cipher.doFinal(Message[0]);
+        byte[] decryptedText = cipher.doFinal(message.getMessage());
 
         return new String(decryptedText);
     }
@@ -103,14 +100,14 @@ public class CryptoService {
         return generatedPassword;
     }
 
-    public static SecretKey getKey(String keyPassword, Properties properties){
-        String salt = properties.getProperty(SALT_KEY);
+    public static SecretKeySpec getKey(String keyPassword, Properties properties) throws Exception{
+        //String salt = properties.getProperty(SALT_KEY);
+        String salt = "toto";
 
-        String keyString = getSaltedHashedValueOf(keyPassword, salt.getBytes());
-
-        byte[] decodedKey = Base64.getDecoder().decode(keyString);
-
-        SecretKey keyToReturn = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
+        KeySpec spec = new PBEKeySpec(keyPassword.toCharArray(), salt.getBytes(), 65536, 256); // AES-256
+        SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        byte[] key = f.generateSecret(spec).getEncoded();
+        SecretKeySpec keyToReturn = new SecretKeySpec(key, "AES");
 
         return  keyToReturn;
     }

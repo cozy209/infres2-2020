@@ -1,23 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9ca84343-ca6e-4712-95ca-a968f725d913" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/ClientSocket.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/salt.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/serversalt.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../../infres2-2020.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Authentification.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Authentification.java" afterDir="false" />
+    <list default="true" id="9ca84343-ca6e-4712-95ca-a968f725d913" name="Default Changelist" comment="Merge branch 'master' into aym&#10;&#10;# Conflicts:&#10;#&#9;SANSONE-SARACCO/Messagerie/Client/ClientSocket/src/main/java/Authentification.java&#10;#&#9;SANSONE-SARACCO/Messagerie/Client/ClientSocket/src/main/java/Client.java&#10;#&#9;SANSONE-SARACCO/Messagerie/Client/ClientSocket/src/main/java/Server.java&#10;#&#9;SANSONE-SARACCO/Messagerie/Client/ClientSocket/src/main/java/test.java">
+      <change afterPath="$PROJECT_DIR$/src/main/java/Message.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/CryptoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/CryptoService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Client.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/CryptoService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/CryptoService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/ClientSocket.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/test.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/test.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,6 +120,14 @@
       <screen x="67" y="27" width="1299" height="676" />
     </state>
     <state x="557" y="256" width="308" height="216" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/67.27.1299.676@67.27.1299.676" timestamp="1581069375234" />
+    <state x="178" y="27" width="1066" height="676" key="CommitChangelistDialog2" timestamp="1581077061853">
+      <screen x="67" y="27" width="1299" height="676" />
+    </state>
+    <state x="178" y="27" width="1066" height="676" key="CommitChangelistDialog2/67.27.1299.676@67.27.1299.676" timestamp="1581077061853" />
+    <state x="167" y="125" width="1099" height="478" key="DiffContextDialog" timestamp="1581077583096">
+      <screen x="67" y="27" width="1299" height="676" />
+    </state>
+    <state x="167" y="125" width="1099" height="478" key="DiffContextDialog/67.27.1299.676@67.27.1299.676" timestamp="1581077583096" />
     <state width="1253" height="152" key="GridCell.Tab.0.bottom" timestamp="1581071390330">
       <screen x="67" y="27" width="1299" height="676" />
     </state>
@@ -164,21 +160,18 @@
       <screen x="67" y="27" width="1299" height="676" />
     </state>
     <state width="1253" height="193" key="GridCell.Tab.1.right/67.27.1299.676@67.27.1299.676" timestamp="1581071162946" />
+    <state x="117" y="27" width="1101" height="670" key="MergeDialog" timestamp="1581077418984">
+      <screen x="67" y="27" width="1299" height="676" />
+    </state>
+    <state x="117" y="27" width="1101" height="670" key="MergeDialog/67.27.1299.676@67.27.1299.676" timestamp="1581077418984" />
+    <state x="421" y="82" width="580" height="564" key="MultipleFileMergeDialog" timestamp="1581077418993">
+      <screen x="67" y="27" width="1299" height="676" />
+    </state>
+    <state x="421" y="82" width="580" height="564" key="MultipleFileMergeDialog/67.27.1299.676@67.27.1299.676" timestamp="1581077418993" />
     <state x="380" y="159" key="run.anything.popup" timestamp="1581070594507">
       <screen x="67" y="27" width="1299" height="676" />
     </state>
     <state x="380" y="159" key="run.anything.popup/67.27.1299.676@67.27.1299.676" timestamp="1581070594507" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/Client.java</url>
-          <line>47</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="masterDetails">
     <states>
