@@ -30,9 +30,7 @@ public class Authentification {
 
         String others = properties.getProperty("MDP");
 
-        othersHashedPassword = CryptoService.getSaltedHashedValueOf(others, salt);
-
-        properties.put("MDP", othersHashedPassword);
+        othersHashedPassword = others;
     }
 
     private void fetchOthersHashedPassword(){

@@ -44,9 +44,6 @@ public class Test {
 
         System.out.println(ok);*/
 
-        byte[] salt = new byte[16];
-        SecureRandom secureRandom = new SecureRandom();
-        secureRandom.nextBytes(salt);
-        System.out.println(new String(salt));
+
     }
 }
