@@ -1,4 +1,5 @@
 import java.security.SecureRandom;
+import java.sql.*;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -9,7 +10,7 @@ public class Authentification {
     String othersHashedPassword;
     byte[] salt;
 
-    public Authentification(Properties properties) {
+    public Authentification(Connection con) {
 
         System.out.println("Bienvenue sur la messagerie sécurisée. Merci de vous connecter :");
         System.out.print("Nom d'utilisateur : ");
@@ -23,24 +24,50 @@ public class Authentification {
         System.out.print("Mot de passe : ");
         String password = new Scanner(System.in).nextLine();
 
-        fetchSalt();
-        fetchOthersHashedPassword();
+        fetchSalt(con);
+        fetchOthersHashedPassword(con);
 
         myHashedPassword = CryptoService.getSaltedHashedValueOf(password,salt);
 
-        String others = properties.getProperty("MDP");
-
-        othersHashedPassword = CryptoService.getSaltedHashedValueOf(others, salt);
-
-        properties.put("MDP", othersHashedPassword);
     }
 
-    private void fetchOthersHashedPassword(){
+    private void fetchOthersHashedPassword(Connection con){
         othersHashedPassword = ""; //TODO : bdd command
-    }
 
-    private void fetchSalt(){
+        PreparedStatement stmt= null;
+        try {
+            stmt = con.prepareStatement("select usr_hash_pwd from users where usr_name!=?");
+
+       stmt.setString(1,username);
+            ResultSet rs = stmt.executeQuery();
+
+           while(rs.next()){
+                System.out.println(rs.getString(1));
+            }
+
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }}
+
+    private void fetchSalt(Connection con){
         salt = "".getBytes(); //TODO : bdd command
+
+        PreparedStatement stmt= null;
+        try {
+            stmt = con.prepareStatement("select usr_salt from users where usr_name=?");
+
+            stmt.setString(1,username);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                System.out.println(rs.getString(1));
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean doesNotExist(String username) {

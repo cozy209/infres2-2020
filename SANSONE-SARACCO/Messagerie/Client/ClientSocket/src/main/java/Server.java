@@ -1,10 +1,16 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.util.Properties;
 import java.util.Scanner;
 
+
+
 public class Server {
+
+    static Connection con;
 
     static BufferedReader inputReader;
     static BufferedWriter outputWriter;
@@ -15,6 +21,14 @@ public class Server {
         String serverResponse;
         String clientRequest;
         Socket socketOfServer = null;
+
+        //bdd
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            con= DriverManager.getConnection("jdbc:mysql://localhost:3306/client","nini","patate");
+
+
+        }catch(Exception e){ e.printStackTrace();}
 
 
         // Creer le server socket
@@ -85,13 +99,16 @@ public class Server {
 
     static boolean authentification()throws IOException{
 
-        String propertiesfile = "/Users/Nini/Documents/Java/ClientSocket/src/main/resources/serversalt.properties";
+        String filePath = new File("").getAbsolutePath();
+
+
+        filePath=filePath.concat("/src/main/resources/serversalt.properties");
 
         Properties properties = new Properties();
-        properties.load(new FileInputStream(propertiesfile));
+        properties.load(new FileInputStream(filePath));
 
         // Authentification du client
-        Authentification authentification = new Authentification(properties);
+        Authentification authentification = new Authentification(con);
         String clientRandom = authentification.getChallenge();
         outputWriter.write(clientRandom);
         outputWriter.newLine();
@@ -108,7 +125,7 @@ public class Server {
         outputWriter.newLine();
         outputWriter.flush();
 
-        properties.store(new FileOutputStream(propertiesfile),"");
+        properties.store(new FileOutputStream(filePath),"");
 
         return passed;
     }

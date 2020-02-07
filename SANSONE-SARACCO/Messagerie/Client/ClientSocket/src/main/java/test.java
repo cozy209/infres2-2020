@@ -1,14 +1,20 @@
+import sun.net.ConnectionResetException;
+
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Base64;
 import java.util.Properties;
 import java.util.Scanner;
 
-public class Test {
+public class test {
 
     public static void main(String[] args) throws Exception {
 
@@ -48,5 +54,19 @@ public class Test {
         SecureRandom secureRandom = new SecureRandom();
         secureRandom.nextBytes(salt);
         System.out.println(new String(salt));
+
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con= DriverManager.getConnection("jdbc:mysql://localhost:3306/client","nini","patate");
+
+            PreparedStatement stmt= null;
+
+                stmt = con.prepareStatement("Insert into user VALUES (,,),(,,)");
+
+
+                stmt.executeQuery();
+
+
+        }catch(Exception e){ e.printStackTrace();}
     }
 }

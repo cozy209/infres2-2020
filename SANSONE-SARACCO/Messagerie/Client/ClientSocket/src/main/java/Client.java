@@ -6,10 +6,12 @@ import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 import java.util.Scanner;
+import java.sql.*;
 
 public class Client {
 
     static SecretKey key;
+    static Connection con;
 
     static BufferedWriter outputWriter = null;
     static BufferedReader inputReader = null;
@@ -21,6 +23,13 @@ public class Client {
         String messageRequest="";
         String messageResponse;
 
+        //bdd
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+        con=DriverManager.getConnection("jdbc:mysql://localhost:3306/client","nini","patate");
+
+
+        }catch(Exception e){ e.printStackTrace();}
         // Generer clé
         try {
             key = KeyGenerator.getInstance("AES").generateKey();
@@ -91,10 +100,13 @@ public class Client {
 
         // Authentification du client
         Properties properties = new Properties();
-        String propertiesfile = "/Users/Nini/Documents/Java/ClientSocket/src/main/resources/salt.properties";
-        properties.load(new FileInputStream(propertiesfile));
+        String filePath = new File("").getAbsolutePath();
 
-        Authentification authentification = new Authentification(properties);
+
+        filePath=filePath.concat("/src/main/resources/salt.properties");
+        properties.load(new FileInputStream(filePath));
+
+        Authentification authentification = new Authentification(con);
         String clientRandom = inputReader.readLine();
         String serverChallenge = authentification.doMyChallenge(clientRandom);
         outputWriter.write(serverChallenge);
@@ -111,7 +123,7 @@ public class Client {
 
         boolean passed = authentification.compareValues(serverResult, clientResult);
 
-        properties.store(new FileOutputStream(propertiesfile),"");
+        properties.store(new FileOutputStream(filePath),"");
 
         return passed;
     }
