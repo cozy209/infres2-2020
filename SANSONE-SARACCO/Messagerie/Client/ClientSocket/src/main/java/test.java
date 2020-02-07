@@ -1,16 +1,9 @@
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Base64;
-import java.util.Properties;
-import java.util.Random;
-import java.util.Scanner;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 
-public class Test {
+public class test {
 
     public static void main(String[] args) throws Exception {
 
@@ -46,21 +39,23 @@ public class Test {
 
         System.out.println(ok);*/
 
-        Random rand = new SecureRandom();
-        char[] salt = new char[16];
-        rand.nextInt(salt.length);
-        System.out.println(salt);
+        byte[] salt = new byte[16];
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(salt);
+        System.out.println(new String(salt));
+
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection con= DriverManager.getConnection("jdbc:mysql://localhost:3306/client","nini","patate");
+
+            PreparedStatement stmt= null;
+
+                stmt = con.prepareStatement("Insert into user VALUES (,,),(,,)");
 
 
-        String propertiesfile = "/Users/Nini/Documents/Java/ClientSocket/src/main/resources/salt.properties";
-        Properties properties = new Properties();
-        properties.load(new FileInputStream(propertiesfile));
-
-        properties.put("SALT",salt);
+                stmt.executeQuery();
 
 
-
-        properties.store(new FileOutputStream(propertiesfile),"");
-
+        }catch(Exception e){ e.printStackTrace();}
     }
 }
