@@ -1,12 +1,13 @@
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Properties;
 import java.util.Scanner;
 
 public class Authentification {
 
     String username;
-    String hashedPassword;
+    String myHashedPassword;
+    String othersHashedPassword;
+    byte[] salt;
 
     public Authentification(Properties properties) {
 
@@ -22,42 +23,57 @@ public class Authentification {
         System.out.print("Mot de passe : ");
         String password = new Scanner(System.in).nextLine();
 
-        String salt = properties.getProperty("SALT");
+        fetchSalt();
+        fetchOthersHashedPassword();
 
-        hashedPassword = getSecurePassword(password,salt.getBytes());
+        myHashedPassword = CryptoService.getSaltedHashedValueOf(password,salt);
+
+        String others = properties.getProperty("MDP");
+
+        othersHashedPassword = CryptoService.getSaltedHashedValueOf(others, salt);
+
+        properties.put("MDP", othersHashedPassword);
+    }
+
+    private void fetchOthersHashedPassword(){
+        othersHashedPassword = ""; //TODO : bdd command
+    }
+
+    private void fetchSalt(){
+        salt = "".getBytes(); //TODO : bdd command
     }
 
     private boolean doesNotExist(String username) {
         boolean doesNotExist = false;
 
-        // bdd command
+        // TODO : bdd command
 
         return doesNotExist;
     }
 
-    private static String getSecurePassword(String passwordToHash, byte[] salt) {
+    public String getChallenge(){
+        SecureRandom random = new SecureRandom();
+        byte challenge[] = new byte[20];
+        random.nextBytes(challenge);
 
-        String generatedPassword = null;
-        try {
+        return challenge.toString();
+    }
 
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
+    public String doOthersChallenge(String challenge){
+        return CryptoService.getSaltedHashedValueOf(othersHashedPassword,challenge.getBytes());
+    }
 
-            md.update(salt);
+    public String doMyChallenge(String challenge){
+        return CryptoService.getSaltedHashedValueOf(myHashedPassword,challenge.getBytes());
+    }
 
-            byte[] bytes = md.digest(passwordToHash.getBytes());
+    public boolean compareValues(String clientChallenge, String serverChallenge){
+        boolean isIdenticalValues = false;
 
-            // Convert the decimal values of the byte[] in hexadecimal
-            StringBuilder sb = new StringBuilder();
-            for(int i=0; i< bytes.length ;i++)
-            {
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
-            generatedPassword = sb.toString();
+        if (clientChallenge.equals(serverChallenge)){
+            isIdenticalValues = true;
         }
-        catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
 
-        return generatedPassword;
+        return isIdenticalValues;
     }
 }

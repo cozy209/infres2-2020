@@ -1,6 +1,8 @@
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.Properties;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -10,10 +12,10 @@ import javax.crypto.spec.SecretKeySpec;
 public class CryptoService {
 
 
-    static String plainText = "This is a plain text which need to be encrypted by Java AES 256 GCM Encryption Algorithm";
     public static final int AES_KEY_SIZE = 256;
     public static final int GCM_IV_LENGTH = 12;
     public static final int GCM_TAG_LENGTH = 16;
+    public static final String SALT_KEY = "SALT";
 
 
     public static void main(String[] args) throws Exception {
@@ -49,8 +51,8 @@ public class CryptoService {
 
         // Perform Encryption
         byte[] cipherText = cipher.doFinal(plaintext);
-        byte[][] Message={cipherText,IV};
 
+        byte[][] Message={cipherText,IV};
 
         return Message;
     }
@@ -73,5 +75,43 @@ public class CryptoService {
         byte[] decryptedText = cipher.doFinal(Message[0]);
 
         return new String(decryptedText);
+    }
+
+    public static String getSaltedHashedValueOf(String valueToHash, byte[] salt) {
+
+        String generatedPassword = null;
+        try {
+
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+            md.update(salt);
+
+            byte[] bytes = md.digest(valueToHash.getBytes());
+
+            // Convert the decimal values of the byte[] in hexadecimal
+            StringBuilder sb = new StringBuilder();
+            for(int i=0; i< bytes.length ;i++)
+            {
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            generatedPassword = sb.toString();
+        }
+        catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return generatedPassword;
+    }
+
+    public static SecretKey getKey(String keyPassword, Properties properties){
+        String salt = properties.getProperty(SALT_KEY);
+
+        String keyString = getSaltedHashedValueOf(keyPassword, salt.getBytes());
+
+        byte[] decodedKey = Base64.getDecoder().decode(keyString);
+
+        SecretKey keyToReturn = new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
+
+        return  keyToReturn;
     }
 }

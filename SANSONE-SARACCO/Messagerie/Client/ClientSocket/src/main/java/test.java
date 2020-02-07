@@ -1,16 +1,18 @@
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import java.io.File;
+import java.io.FileInputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Arrays;
 import java.util.Base64;
+import java.util.Properties;
 import java.util.Scanner;
 
-public class test {
+public class Test {
 
     public static void main(String[] args) throws Exception {
 
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+        /*KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
         keyGenerator.init(CryptoService.AES_KEY_SIZE);
 
         // Generate Key
@@ -19,26 +21,32 @@ public class test {
         SecureRandom random = new SecureRandom();
         random.nextBytes(IV);
 
-
-
-
-
-
-
-
-
-
         String toto="";
         while (!toto.equals("QUIT")) {
             toto = new Scanner(System.in).nextLine();
 
-            byte[][] Message = CryptoService.encrypt(toto.getBytes(), key);
-            System.out.println(Base64.getEncoder().encodeToString(Message[0]));
+            byte[] cipherText = CryptoService.encrypt(toto.getBytes(), key, IV);
+            System.out.println(Base64.getEncoder().encodeToString(cipherText));
 
-            String decryptedText = CryptoService.decrypt(Message, key);
+            String decryptedText = CryptoService.decrypt(cipherText, key, IV);
             System.out.println(decryptedText);
         }
 
-        //Authentification authent = new Authentification(null);
+        Authentification authent = new Authentification(null);
+
+        String challenge = authent.getChallenge();
+
+
+        String serverChallenge = authent.doChallenge(challenge);
+        String clientChallenge = authent.doChallenge(challenge);
+
+        boolean ok = authent.compareValues(clientChallenge,serverChallenge);
+
+        System.out.println(ok);*/
+
+        byte[] salt = new byte[16];
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(salt);
+        System.out.println(new String(salt));
     }
 }

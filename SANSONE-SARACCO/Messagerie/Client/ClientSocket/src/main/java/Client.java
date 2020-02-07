@@ -4,22 +4,24 @@ import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Properties;
 import java.util.Scanner;
 
 public class Client {
 
     static SecretKey key;
 
+    static BufferedWriter outputWriter = null;
+    static BufferedReader inputReader = null;
 
-    public static void main(String[] args) throws NoSuchAlgorithmException {
+    public static void main(String[] args) {
 
         String serverHost = "127.0.0.1";
         Socket socketOfClient = null;
-        BufferedWriter os = null;
-        BufferedReader is = null;
+        String messageRequest="";
+        String messageResponse;
 
-
-
+        // Generer clé
         try {
             key = KeyGenerator.getInstance("AES").generateKey();
         } catch (NoSuchAlgorithmException e){
@@ -27,12 +29,11 @@ public class Client {
         }
 
         try {
+            // Creation du socket
             socketOfClient = new Socket(serverHost, 9090);
 
-            os = new BufferedWriter(new OutputStreamWriter(socketOfClient.getOutputStream()));
-            is = new BufferedReader(new InputStreamReader(socketOfClient.getInputStream()));
-
-            System.out.println("That worked");
+            outputWriter = new BufferedWriter(new OutputStreamWriter(socketOfClient.getOutputStream()));
+            inputReader = new BufferedReader(new InputStreamReader(socketOfClient.getInputStream()));
 
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + serverHost);
@@ -44,28 +45,38 @@ public class Client {
 
         try {
 
-            String toto="";
-
-            while (!toto.equals("QUIT")) {
-
-                toto = new Scanner(System.in).nextLine();
-
-                byte[][] cryptedToto = CryptoService.encrypt(toto.getBytes(),key);
-
-                os.write(toto);
-
-                os.newLine();
-
-                os.flush();
 
 
-                String responseLine;
-                responseLine = is.readLine();
-                System.out.println("Server: " + responseLine);
+            if (authentification()) {
+
+                String connect = "Vous êtes désormais connecté.";
+                System.out.println(connect);
+
+                // Conversation
+                while (!messageRequest.equals("QUIT")) {
+
+                    messageRequest = new Scanner(System.in).nextLine();
+
+
+                    // Chiffrement
+                    //byte[] cryptedToto = CryptoService.encrypt(messageRequest.getBytes(),key,CryptoService.getNewIV());
+
+
+                    // Envoi du message
+                    outputWriter.write(messageRequest);
+                    outputWriter.newLine();
+                    outputWriter.flush();
+
+
+                    //Reception et affichage de la réponse
+                    messageResponse = inputReader.readLine();
+                    System.out.println("Server: " + messageResponse);
+                }
             }
 
-            os.close();
-            is.close();
+            // Fermeture de la connection et des streams
+            outputWriter.close();
+            inputReader.close();
             socketOfClient.close();
         } catch (UnknownHostException e) {
             System.err.println("Trying to connect to unknown host: " + e);
@@ -76,4 +87,33 @@ public class Client {
         }
     }
 
+    static boolean authentification()throws IOException{
+
+        // Authentification du client
+        Properties properties = new Properties();
+        String propertiesfile = "/Users/Nini/Documents/Java/ClientSocket/src/main/resources/salt.properties";
+        properties.load(new FileInputStream(propertiesfile));
+
+        Authentification authentification = new Authentification(properties);
+        String clientRandom = inputReader.readLine();
+        String serverChallenge = authentification.doMyChallenge(clientRandom);
+        outputWriter.write(serverChallenge);
+        outputWriter.newLine();
+        outputWriter.flush();
+
+        // Authentification du server
+        String serverRandom = authentification.getChallenge();
+        outputWriter.write(serverRandom);
+        outputWriter.newLine();
+        outputWriter.flush();
+        String clientResult = authentification.doOthersChallenge(serverRandom);
+        String serverResult = inputReader.readLine();
+
+        boolean passed = authentification.compareValues(serverResult, clientResult);
+
+        properties.store(new FileOutputStream(propertiesfile),"");
+
+        return passed;
+    }
+    
 }
