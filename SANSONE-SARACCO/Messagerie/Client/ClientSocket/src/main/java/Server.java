@@ -87,12 +87,8 @@ public class Server {
                     stmt = con.prepareStatement("Insert into messages(msg_user_id,msg_message) " +
                             "VALUES ((select usr_id from users where usr_name!=?),?)  ");
 
-
                     stmt.setString(1, authentification.getUsername());
                     stmt.setObject(2, clientRequest);
-
-                    System.out.println(stmt.toString());
-
 
                     stmt.executeUpdate();
 
@@ -109,12 +105,8 @@ public class Server {
                     stmt = con.prepareStatement("Insert into messages(msg_user_id,msg_message) " +
                             "VALUES ((select usr_id from users where usr_name=?),?)  ");
 
-
                     stmt.setString(1, authentification.getUsername());
                     stmt.setObject(2, serverResponse);
-
-                    System.out.println(stmt.toString());
-
 
                     stmt.executeUpdate();
 

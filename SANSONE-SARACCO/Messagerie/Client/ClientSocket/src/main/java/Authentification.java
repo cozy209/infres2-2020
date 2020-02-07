@@ -30,7 +30,6 @@ public class Authentification {
         fetchOthersHashedPassword(con);
 
         myHashedPassword = CryptoService.getSaltedHashedValueOf(password, salt);
-        System.out.println(myHashedPassword);
     }
 
     private void fetchOthersHashedPassword(Connection con) {
@@ -43,7 +42,6 @@ public class Authentification {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                System.out.println(rs.getString(1));
                 othersHashedPassword = rs.getString(1);
             }
 
@@ -62,7 +60,6 @@ public class Authentification {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                System.out.println(rs.getString(1));
                 salt = rs.getString(1);
             }
 
@@ -77,7 +74,6 @@ public class Authentification {
     private boolean doesNotExist(String username, Connection con) {
         boolean doesNotExist = true;
 
-        // TODO : bdd command
         PreparedStatement stmt = null;
         try {
             stmt = con.prepareStatement("select count(usr_id) from users where usr_name=?");
@@ -87,7 +83,6 @@ public class Authentification {
 
             while (rs.next()) {
                 if (rs.getBoolean(1)) {
-                    System.out.println(rs.getBoolean(1));
                     doesNotExist = false;
                 }
             }

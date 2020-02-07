@@ -80,18 +80,13 @@ public class Client {
                     // Chiffrement
                     messageRequest = CryptoService.encrypt(clientInput.getBytes(), key);
 
-
                     PreparedStatement stmt = null;
 
                     stmt = con.prepareStatement("Insert into messages(msg_user_id,msg_message) " +
                             "VALUES ((select usr_id from users where usr_name=?),?)  ");
 
-
                     stmt.setString(1, authentification.getUsername());
                     stmt.setObject(2, messageRequest);
-
-                    System.out.println(stmt.toString());
-
 
                     stmt.executeUpdate();
 
@@ -99,22 +94,17 @@ public class Client {
                     outputWriter.writeObject(messageRequest);
                     outputWriter.flush();
 
-
                     //Reception et affichage de la réponse
                     messageResponse = (Message) inputReader.readObject();
-
 
                     stmt = con.prepareStatement("Insert into messages(msg_user_id,msg_message) " +
                             "VALUES ((select usr_id from users where usr_name!=?),?)  ");
 
-
                     stmt.setString(1, authentification.getUsername());
                     stmt.setObject(2, messageResponse);
 
-                    System.out.println(stmt.toString());
-
-
                     stmt.executeUpdate();
+
                     System.out.println("Server: " + CryptoService.decrypt(messageResponse, key));
                 }
             }
@@ -140,7 +130,6 @@ public class Client {
 
             authentification = new Authentification(con);
 
-
             // Reçoit le random
             Message messageClientRandom = (Message) inputReader.readObject();
             String clientRandom = CryptoService.decrypt(messageClientRandom, key);
@@ -161,8 +150,6 @@ public class Client {
             // reçoit la reponse du server et compare
             Message serverResult = (Message) inputReader.readObject();
             passed = authentification.compareValues(CryptoService.decrypt(serverResult, key), clientResult);
-
-            //properties.store(new FileOutputStream(propertiesfile),"");
 
         } catch (IOException e) {
             System.out.println("Authentification : " + e);
