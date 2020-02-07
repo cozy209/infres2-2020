@@ -1,18 +1,7 @@
-import sun.net.ConnectionResetException;
-
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import java.io.File;
-import java.io.FileInputStream;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.Base64;
-import java.util.Properties;
-import java.util.Scanner;
 
 public class test {
 
