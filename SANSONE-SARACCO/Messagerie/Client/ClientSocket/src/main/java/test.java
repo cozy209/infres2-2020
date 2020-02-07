@@ -1,9 +1,11 @@
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.security.SecureRandom;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import java.util.Properties;
+import java.util.Random;
+import java.util.UUID;
 
-public class test {
+public class Test {
 
     public static void main(String[] args) throws Exception {
 
@@ -39,23 +41,10 @@ public class test {
 
         System.out.println(ok);*/
 
-        byte[] salt = new byte[16];
-        SecureRandom secureRandom = new SecureRandom();
-        secureRandom.nextBytes(salt);
-        System.out.println(new String(salt));
 
-        try{
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con= DriverManager.getConnection("jdbc:mysql://localhost:3306/client","nini","patate");
+        Message msg = new Message("toto".getBytes(),"tutu".getBytes());
 
-            PreparedStatement stmt= null;
+        msg.toString();
 
-                stmt = con.prepareStatement("Insert into user VALUES (,,),(,,)");
-
-
-                stmt.executeQuery();
-
-
-        }catch(Exception e){ e.printStackTrace();}
     }
 }

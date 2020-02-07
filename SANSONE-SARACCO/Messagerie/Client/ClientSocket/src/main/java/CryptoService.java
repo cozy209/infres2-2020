@@ -86,8 +86,7 @@ public class CryptoService {
     }
 
     public static SecretKeySpec getKey(String keyPassword, Properties properties) throws Exception {
-        //String salt = properties.getProperty(SALT_KEY);
-        String salt = "toto";
+        String salt = properties.getProperty(SALT_KEY);
 
         KeySpec spec = new PBEKeySpec(keyPassword.toCharArray(), salt.getBytes(), 65536, 256); // AES-256
         SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
