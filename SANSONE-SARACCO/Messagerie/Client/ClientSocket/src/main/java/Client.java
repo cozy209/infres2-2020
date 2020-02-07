@@ -38,9 +38,13 @@ public class Client {
         try {
 
             // Mise en place chiffrement
+            String propertiesfile = "/Users/Nini/Documents/Java/ClientSocket/src/main/resources/salt.properties";
+            Properties properties = new Properties();
+            properties.load(new FileInputStream(propertiesfile));
+
             System.out.print("Entrez la clé de chiffrement : ");
             String pwd = new Scanner(System.in).nextLine();
-            key = CryptoService.getKey(pwd, null); // TODO : properties
+            key = CryptoService.getKey(pwd, properties);
 
             if (authentification()) {
 
@@ -90,7 +94,7 @@ public class Client {
             String propertiesfile = "/Users/Nini/Documents/Java/ClientSocket/src/main/resources/salt.properties";
             properties.load(new FileInputStream(propertiesfile));
 
-            Authentification authentification = new Authentification(properties);
+            Authentification authentification = new Authentification();
 
             // Reçoit le random
             Message messageClientRandom = (Message) inputReader.readObject();

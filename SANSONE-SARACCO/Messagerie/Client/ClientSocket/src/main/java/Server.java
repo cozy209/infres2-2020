@@ -40,9 +40,13 @@ public class Server {
             outputWriter = new ObjectOutputStream(client.getOutputStream());
 
             // Mise en place chiffrement
+            String propertiesfile = "/Users/Nini/Documents/Java/ClientSocket/src/main/resources/salt.properties";
+            Properties properties = new Properties();
+            properties.load(new FileInputStream(propertiesfile));
+
             System.out.print("Entrez la clé de chiffrement : ");
             String pwd = new Scanner(System.in).nextLine();
-            key = CryptoService.getKey(pwd, null); // TODO : properties
+            key = CryptoService.getKey(pwd, properties);
 
 
 
@@ -102,13 +106,8 @@ public class Server {
 
         try{
 
-            String propertiesfile = "/Users/Nini/Documents/Java/ClientSocket/src/main/resources/serversalt.properties";
-
-            Properties properties = new Properties();
-            properties.load(new FileInputStream(propertiesfile));
-
             // Authentification du client
-            Authentification authentification = new Authentification(properties);
+            Authentification authentification = new Authentification();
 
             // Envoie le random
             String clientRandom = authentification.getChallenge();
@@ -132,7 +131,6 @@ public class Server {
             outputWriter.writeObject(CryptoService.encrypt(clientChallenge.getBytes(),key));
             outputWriter.flush();
 
-            //properties.store(new FileOutputStream(propertiesfile),"");
 
         } catch (IOException e){
             System.out.println( "Authentification : " + e);

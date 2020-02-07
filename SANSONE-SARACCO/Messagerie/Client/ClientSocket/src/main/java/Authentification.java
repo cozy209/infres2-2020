@@ -7,9 +7,9 @@ public class Authentification {
     String username;
     String myHashedPassword;
     String othersHashedPassword;
-    byte[] salt;
+    String salt;
 
-    public Authentification(Properties properties) {
+    public Authentification() {
 
         System.out.println("Bienvenue sur la messagerie sécurisée. Merci de vous connecter :");
         System.out.print("Nom d'utilisateur : ");
@@ -27,10 +27,6 @@ public class Authentification {
         fetchOthersHashedPassword();
 
         myHashedPassword = CryptoService.getSaltedHashedValueOf(password,salt);
-
-        String others = properties.getProperty("MDP");
-
-        othersHashedPassword = others;
     }
 
     private void fetchOthersHashedPassword(){
@@ -38,7 +34,7 @@ public class Authentification {
     }
 
     private void fetchSalt(){
-        salt = "".getBytes(); //TODO : bdd command
+        salt = ""; //TODO : bdd command
     }
 
     private boolean doesNotExist(String username) {
@@ -58,11 +54,11 @@ public class Authentification {
     }
 
     public String doOthersChallenge(String challenge){
-        return CryptoService.getSaltedHashedValueOf(othersHashedPassword,challenge.getBytes());
+        return CryptoService.getSaltedHashedValueOf(othersHashedPassword,challenge);
     }
 
     public String doMyChallenge(String challenge){
-        return CryptoService.getSaltedHashedValueOf(myHashedPassword,challenge.getBytes());
+        return CryptoService.getSaltedHashedValueOf(myHashedPassword,challenge);
     }
 
     public boolean compareValues(String clientChallenge, String serverChallenge){
